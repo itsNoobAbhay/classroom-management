@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Classroom Issues</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light blue theme */
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input, textarea, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .issue-list {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .issue {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .issue img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Report Classroom Issues</h1>
+
+    <div class="container">
+        <form id="issueForm">
+            <input type="text" id="title" placeholder="Issue Title" required>
+            <textarea id="description" placeholder="Describe the issue" required></textarea>
+            <input type="file" id="image" accept="image/*">
+            <button type="submit">Submit Issue</button>
+        </form>
+    </div>
+
+    <h2>Reported Issues</h2>
+    <div class="container issue-list" id="issuesContainer"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadIssues(); // Load existing issues on page load
+        });
+
+        document.getElementById("issueForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const title = document.getElementById("title").value.trim();
+            const description = document.getElementById("description").value.trim();
+            const imageInput = document.getElementById("image");
+
+            if (!title || !description) {
+                alert("Please fill in all fields!");
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                const issue = {
+                    title: title,
+                    description: description,
+                    image: event.target.result || ""
+                };
+
+                saveIssue(issue); // Store in localStorage
+                displayIssue(issue); // Show on screen
+
+                document.getElementById("issueForm").reset();
+            };
+
+            if (imageInput.files.length > 0) {
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                const issue = { title, description, image: "" };
+                saveIssue(issue);
+                displayIssue(issue);
+                document.getElementById("issueForm").reset();
+            }
+        });
+
+        function saveIssue(issue) {
+            let issues = JSON.parse(localStorage.getItem("reportedIssues")) || []; // Get existing issues
+            issues.push(issue); // Add new issue
+            localStorage.setItem("reportedIssues", JSON.stringify(issues)); // Save back to localStorage
+        }
+
+        function loadIssues() {
+            let issues = JSON.parse(localStorage.getItem("reportedIssues")) || [];
+            issues.forEach(displayIssue);
+        }
+
+        function displayIssue(issue) {
+            const container = document.getElementById("issuesContainer");
+
+            const issueDiv = document.createElement("div");
+            issueDiv.classList.add("issue");
+
+            issueDiv.innerHTML = `
+                <h3>${issue.title}</h3>
+                <p>${issue.description}</p>
+                ${issue.image ? `<img src="${issue.image}" alt="Issue Image">` : ""}
+            `;
+
+            container.appendChild(issueDiv);
+        }
+    </script>
+
+</body>
+</html>

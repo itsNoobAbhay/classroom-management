@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Scheduling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f4ff;
+        }
+
+        header {
+            background: #004080;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+        }
+
+        section {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #004080;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #004080;
+            color: white;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #004080;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0059b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="root.html">⬅ Back to Home</a>
+        <h1>📅 Class Scheduling</h1>
+    </header>
+
+    <!-- Display Timetable at the Top -->
+    <section>
+        <h2>📋 Today's Timetable</h2>
+        <table id="timetable">
+            <tr>
+                <th>Time Slot</th>
+                <th>Teacher</th>
+            </tr>
+            <tr>
+                <td>10:50 - 12:30</td>
+                <td id="slot1">-</td>
+            </tr>
+            <tr>
+                <td>12:40 - 2:00</td>
+                <td id="slot2">-</td>
+            </tr>
+            <tr>
+                <td>2:30 - 4:10</td>
+                <td id="slot3">-</td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- Timetable Creation Form at the Bottom -->
+    <section>
+        <h2>📌 Create/Update Timetable</h2>
+        <form id="timetable-form">
+            <label for="teacher1">10:50 - 12:30:</label>
+            <select id="teacher1">
+                <option value="" disabled selected>Select a teacher</option>
+                <option value="Jyotika Madam">Jyotika Madam</option>
+                <option value="Vishal Sir">Vishal Sir</option>
+                <option value="Hiren Sir">Hiren Sir</option>
+                <option value="Priti Madam">Priti Madam</option>
+                <option value="Siddhesh Sir">Siddhesh Sir</option>
+            </select>
+
+            <label for="teacher2">12:40 - 2:00:</label>
+            <select id="teacher2">
+                <option value="" disabled selected>Select a teacher</option>
+                <option value="Jyotika Madam">Jyotika Madam</option>
+                <option value="Vishal Sir">Vishal Sir</option>
+                <option value="Hiren Sir">Hiren Sir</option>
+                <option value="Priti Madam">Priti Madam</option>
+                <option value="Siddhesh Sir">Siddhesh Sir</option>
+            </select>
+
+            <label for="teacher3">2:30 - 4:10:</label>
+            <select id="teacher3">
+                <option value="" disabled selected>Select a teacher</option>
+                <option value="Jyotika Madam">Jyotika Madam</option>
+                <option value="Vishal Sir">Vishal Sir</option>
+                <option value="Hiren Sir">Hiren Sir</option>
+                <option value="Priti Madam">Priti Madam</option>
+                <option value="Siddhesh Sir">Siddhesh Sir</option>
+            </select>
+
+            <label for="password">Enter Admin Password:</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Update Timetable</button>
+        </form>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const timetableForm = document.getElementById("timetable-form");
+
+            // Load timetable from localStorage
+            function loadTimetable() {
+                const savedTimetable = JSON.parse(localStorage.getItem("timetable"));
+                if (savedTimetable) {
+                    document.getElementById("slot1").innerText = savedTimetable.slot1 || "-";
+                    document.getElementById("slot2").innerText = savedTimetable.slot2 || "-";
+                    document.getElementById("slot3").innerText = savedTimetable.slot3 || "-";
+                }
+            }
+
+            // Save timetable to localStorage
+            function saveTimetable(slot1, slot2, slot3) {
+                const timetableData = { slot1, slot2, slot3 };
+                localStorage.setItem("timetable", JSON.stringify(timetableData));
+            }
+
+            timetableForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const password = document.getElementById("password").value;
+                if (password !== "admin") {
+                    alert("Incorrect password! Only admin can update the timetable.");
+                    return;
+                }
+
+                const teacher1 = document.getElementById("teacher1").value;
+                const teacher2 = document.getElementById("teacher2").value;
+                const teacher3 = document.getElementById("teacher3").value;
+
+                if (!teacher1 || !teacher2 || !teacher3) {
+                    alert("Please select a teacher for each time slot.");
+                    return;
+                }
+
+                // Update timetable in the UI
+                document.getElementById("slot1").innerText = teacher1;
+                document.getElementById("slot2").innerText = teacher2;
+                document.getElementById("slot3").innerText = teacher3;
+
+                // Save timetable to localStorage
+                saveTimetable(teacher1, teacher2, teacher3);
+
+                alert("Timetable updated successfully!");
+                timetableForm.reset();
+            });
+
+            // Load timetable when page loads
+            loadTimetable();
+        });
+    </script>
+</body>
+</html>

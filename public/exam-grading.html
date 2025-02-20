@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Scheduling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #e0f2ff;
+        }
+
+        header {
+            background: #0077cc;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+        }
+
+        section {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #0077cc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #0077cc;
+            color: white;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #0077cc;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #005fa3;
+        }
+
+        #exam-timetable {
+            display: none; /* Hide initially */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="root.html">⬅ Back to Home</a>
+        <h1>📊 Exam & Grading</h1>
+    </header>
+
+    <!-- Exam Timetable (Hidden Initially) -->
+    <section id="exam-timetable" style="display: none;">
+        <h2>📅 Exam Timetable</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Subject</th>
+            </tr>
+            <tbody id="exam-schedule-body"></tbody>
+        </table>
+    </section>
+
+    <!-- Exam Scheduling Form -->
+    <section>
+        <h2>📝 Create Exam Schedule</h2>
+        <form id="exam-form">
+            <label>Select Date for EARN:</label>
+            <input type="date" id="date1" required>
+
+            <label>Select Date for Cloud Computing Fundamentals:</label>
+            <input type="date" id="date2" required>
+
+            <label>Select Date for ITSM:</label>
+            <input type="date" id="date3" required>
+
+            <label>Select Date for Computer Security:</label>
+            <input type="date" id="date4" required>
+
+            <label>Select Date for Power BI:</label>
+            <input type="date" id="date5" required>
+
+            <label>Enter Admin Password:</label>
+            <input type="password" id="password" required>
+            <button type="submit">Generate Exam Schedule</button>
+        </form>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const examForm = document.getElementById("exam-form");
+            const examTableBody = document.getElementById("exam-schedule-body");
+            const examTimetableSection = document.getElementById("exam-timetable");
+
+            const subjects = [
+                "EARN",
+                "Cloud Computing Fundamentals",
+                "ITSM",
+                "Computer Security",
+                "Power BI"
+            ];
+
+            function loadExamTimetable() {
+                const savedTimetable = JSON.parse(localStorage.getItem("examTimetable"));
+                if (savedTimetable && savedTimetable.length > 0) {
+                    examTableBody.innerHTML = "";
+                    savedTimetable.forEach((exam) => {
+                        let row = `<tr><td>${exam.date}</td><td>${exam.subject}</td></tr>`;
+                        examTableBody.innerHTML += row;
+                    });
+                    examTimetableSection.style.display = "block"; // Show only if data exists
+                } else {
+                    examTimetableSection.style.display = "none"; // Hide if no data
+                }
+            }
+
+            function saveExamTimetable(timetable) {
+                localStorage.setItem("examTimetable", JSON.stringify(timetable));
+            }
+
+            examForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const password = document.getElementById("password").value;
+                if (password !== "admin") {
+                    alert("Incorrect password! Only admin can generate the exam schedule.");
+                    return;
+                }
+
+                let newTimetable = [];
+                for (let i = 1; i <= 5; i++) {
+                    let date = document.getElementById(`date${i}`).value;
+                    if (!date) {
+                        alert("Please select all dates!");
+                        return;
+                    }
+                    newTimetable.push({ date: date, subject: subjects[i - 1] });
+                }
+
+                saveExamTimetable(newTimetable);
+                loadExamTimetable(); // Reload data after saving
+                alert("Exam schedule generated successfully!");
+                examForm.reset();
+            });
+
+            loadExamTimetable(); // Load stored timetable on page load
+        });
+    </script>
+</body>
+</html>

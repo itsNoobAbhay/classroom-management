@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f0f4ff;
+        }
+
+        header {
+            background: #004080;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        a {
+            color: white;
+            text-decoration: none;
+        }
+
+        section {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #004080;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #004080;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0059b3;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #e3e7f1;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="root.html">⬅ Back to Home</a>
+        <h1>📖 Assignment Management</h1>
+    </header>
+
+    <!-- Teacher Section -->
+    <section class="teacher-section">
+        <h2>📌 Post an Assignment</h2>
+        <form id="assignment-form">
+            <label for="title">Title:</label>
+            <input type="text" id="title" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" required></textarea>
+
+            <button type="submit">Post Assignment</button>
+        </form>
+
+        <h3>📜 Posted Assignments</h3>
+        <ul id="assignments-list"></ul>
+    </section>
+
+    <!-- Student Section -->
+    <section class="student-section">
+        <h2>✏️ Submit Your Assignment</h2>
+        <form id="submission-form">
+            <label for="student-name">Your Name:</label>
+            <input type="text" id="student-name" required>
+
+            <label for="assignment-select">Select Assignment:</label>
+            <select id="assignment-select" required>
+                <option value="" disabled selected>No assignments available</option>
+            </select>
+
+            <label for="assignment-file">Upload File:</label>
+            <input type="file" id="assignment-file" required>
+
+            <button type="submit">Submit Assignment</button>
+        </form>
+
+        <h3>📂 Submitted Assignments</h3>
+        <ul id="submissions-list"></ul>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const assignmentForm = document.getElementById("assignment-form");
+            const assignmentsList = document.getElementById("assignments-list");
+            const assignmentSelect = document.getElementById("assignment-select");
+
+            const submissionForm = document.getElementById("submission-form");
+            const submissionsList = document.getElementById("submissions-list");
+
+            let assignments = [];
+
+            // Handle posting assignments
+            assignmentForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const title = document.getElementById("title").value;
+                const description = document.getElementById("description").value;
+
+                if (title && description) {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<strong>${title}</strong>: ${description}`;
+                    assignmentsList.appendChild(li);
+
+                    // Add to assignments list
+                    assignments.push(title);
+                    updateAssignmentDropdown();
+
+                    assignmentForm.reset();
+                }
+            });
+
+            function updateAssignmentDropdown() {
+                assignmentSelect.innerHTML = ""; // Clear previous options
+                
+                if (assignments.length === 0) {
+                    assignmentSelect.innerHTML = `<option value="" disabled selected>No assignments available</option>`;
+                } else {
+                    assignmentSelect.innerHTML = `<option value="" disabled selected>Select an assignment</option>`;
+                    assignments.forEach(assignment => {
+                        let option = document.createElement("option");
+                        option.value = assignment;
+                        option.textContent = assignment;
+                        assignmentSelect.appendChild(option);
+                    });
+                }
+            }
+
+            // Handle submitting assignments
+            submissionForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const studentName = document.getElementById("student-name").value;
+                const selectedAssignment = assignmentSelect.value;
+                const fileInput = document.getElementById("assignment-file");
+                const fileName = fileInput.files[0] ? fileInput.files[0].name : "No file selected";
+
+                if (studentName && selectedAssignment && fileName) {
+                    const li = document.createElement("li");
+                    li.innerHTML = `<strong>${studentName}</strong> submitted <em>${fileName}</em> for <strong>${selectedAssignment}</strong>`;
+                    submissionsList.appendChild(li);
+
+                    submissionForm.reset();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
