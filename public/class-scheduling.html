@@ -1,214 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Scheduling</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #f0f4ff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Class Scheduling</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef3fb;
+      margin: 0;
+      padding: 0;
+    }
 
-        header {
-            background: #004080;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
+    header {
+      background: linear-gradient(90deg, #004080, #0066cc);
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+      font-size: 1.8rem;
+    }
 
-        a {
-            color: white;
-            text-decoration: none;
-        }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-        section {
-            width: 80%;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    .dept-card {
+      background: white;
+      padding: 30px 25px;
+      margin-bottom: 40px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
 
-        h2 {
-            text-align: center;
-            color: #004080;
-        }
+    .dept-card:hover {
+      transform: translateY(-4px);
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    h2 {
+      text-align: center;
+      color: #003366;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
 
-        th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
+    input[type="file"] {
+      margin: 10px 0;
+      padding: 8px;
+    }
 
-        th {
-            background: #004080;
-            color: white;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
 
-        label {
-            font-weight: bold;
-        }
+    th {
+      background-color: #004080;
+      color: white;
+      font-weight: 600;
+    }
 
-        select, input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
 
-        button {
-            background: #004080;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    button {
+      background: #004080;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      margin-top: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
 
-        button:hover {
-            background: #0059b3;
-        }
-    </style>
+    button:hover {
+      background: #0059b3;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <a href="root.html">⬅ Back to Home</a>
-        <h1>📅 Class Scheduling</h1>
-    </header>
+  <header>📅 Class Scheduling</header>
 
-    <!-- Display Timetable at the Top -->
-    <section>
-        <h2>📋 Today's Timetable</h2>
-        <table id="timetable">
-            <tr>
-                <th>Time Slot</th>
-                <th>Teacher</th>
-            </tr>
-            <tr>
-                <td>10:50 - 12:30</td>
-                <td id="slot1">-</td>
-            </tr>
-            <tr>
-                <td>12:40 - 2:00</td>
-                <td id="slot2">-</td>
-            </tr>
-            <tr>
-                <td>2:30 - 4:10</td>
-                <td id="slot3">-</td>
-            </tr>
-        </table>
-    </section>
+  <div class="container">
+    <div class="dept-card" id="CS">
+      <h2>Computer Science (CS)</h2>
+      <input type="file" accept=".xlsx" onchange="handleFileUpload(event, 'CS')" />
+      <div id="table_CS"></div>
+    </div>
 
-    <!-- Timetable Creation Form at the Bottom -->
-    <section>
-        <h2>📌 Create/Update Timetable</h2>
-        <form id="timetable-form">
-            <label for="teacher1">10:50 - 12:30:</label>
-            <select id="teacher1">
-                <option value="" disabled selected>Select a teacher</option>
-                <option value="Jyotika Madam">Jyotika Madam</option>
-                <option value="Vishal Sir">Vishal Sir</option>
-                <option value="Hiren Sir">Hiren Sir</option>
-                <option value="Priti Madam">Priti Madam</option>
-                <option value="Siddhesh Sir">Siddhesh Sir</option>
-            </select>
+    <div class="dept-card" id="DS">
+      <h2>Data Science (DS)</h2>
+      <input type="file" accept=".xlsx" onchange="handleFileUpload(event, 'DS')" />
+      <div id="table_DS"></div>
+    </div>
 
-            <label for="teacher2">12:40 - 2:00:</label>
-            <select id="teacher2">
-                <option value="" disabled selected>Select a teacher</option>
-                <option value="Jyotika Madam">Jyotika Madam</option>
-                <option value="Vishal Sir">Vishal Sir</option>
-                <option value="Hiren Sir">Hiren Sir</option>
-                <option value="Priti Madam">Priti Madam</option>
-                <option value="Siddhesh Sir">Siddhesh Sir</option>
-            </select>
+    <div class="dept-card" id="IT">
+      <h2>Information Technology (IT)</h2>
+      <input type="file" accept=".xlsx" onchange="handleFileUpload(event, 'IT')" />
+      <div id="table_IT"></div>
+    </div>
+  </div>
 
-            <label for="teacher3">2:30 - 4:10:</label>
-            <select id="teacher3">
-                <option value="" disabled selected>Select a teacher</option>
-                <option value="Jyotika Madam">Jyotika Madam</option>
-                <option value="Vishal Sir">Vishal Sir</option>
-                <option value="Hiren Sir">Hiren Sir</option>
-                <option value="Priti Madam">Priti Madam</option>
-                <option value="Siddhesh Sir">Siddhesh Sir</option>
-            </select>
+  <script>
+    const PASSWORD = "admin";
 
-            <label for="password">Enter Admin Password:</label>
-            <input type="password" id="password" required>
+    function excelTimeToString(value) {
+      if (!value && value !== 0) return '';
+      const totalMinutes = Math.round(value * 24 * 60);
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const formattedHour = ((hours + 11) % 12 + 1); // convert 0-23 to 1-12
+      return `${String(formattedHour).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`;
+    }
 
-            <button type="submit">Update Timetable</button>
-        </form>
-    </section>
+    function handleFileUpload(event, department) {
+      const file = event.target.files[0];
+      if (!file) return;
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const timetableForm = document.getElementById("timetable-form");
+      const enteredPassword = prompt("Enter admin password to upload timetable:");
+      if (enteredPassword !== PASSWORD) {
+        alert("Incorrect password.");
+        return;
+      }
 
-            // Load timetable from localStorage
-            function loadTimetable() {
-                const savedTimetable = JSON.parse(localStorage.getItem("timetable"));
-                if (savedTimetable) {
-                    document.getElementById("slot1").innerText = savedTimetable.slot1 || "-";
-                    document.getElementById("slot2").innerText = savedTimetable.slot2 || "-";
-                    document.getElementById("slot3").innerText = savedTimetable.slot3 || "-";
-                }
-            }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-            // Save timetable to localStorage
-            function saveTimetable(slot1, slot2, slot3) {
-                const timetableData = { slot1, slot2, slot3 };
-                localStorage.setItem("timetable", JSON.stringify(timetableData));
-            }
+        if (rows.length < 2 || rows[0].length < 3) {
+          alert("Invalid file format!");
+          return;
+        }
 
-            timetableForm.addEventListener("submit", function (event) {
-                event.preventDefault();
-
-                const password = document.getElementById("password").value;
-                if (password !== "admin") {
-                    alert("Incorrect password! Only admin can update the timetable.");
-                    return;
-                }
-
-                const teacher1 = document.getElementById("teacher1").value;
-                const teacher2 = document.getElementById("teacher2").value;
-                const teacher3 = document.getElementById("teacher3").value;
-
-                if (!teacher1 || !teacher2 || !teacher3) {
-                    alert("Please select a teacher for each time slot.");
-                    return;
-                }
-
-                // Update timetable in the UI
-                document.getElementById("slot1").innerText = teacher1;
-                document.getElementById("slot2").innerText = teacher2;
-                document.getElementById("slot3").innerText = teacher3;
-
-                // Save timetable to localStorage
-                saveTimetable(teacher1, teacher2, teacher3);
-
-                alert("Timetable updated successfully!");
-                timetableForm.reset();
-            });
-
-            // Load timetable when page loads
-            loadTimetable();
+        const timetable = rows.slice(1, 4).map((row) => {
+          const from = excelTimeToString(row[0]);
+          const to = excelTimeToString(row[1]);
+          const teacher = row[2] || "N/A";
+          return {
+            time: `${from} - ${to}`,
+            teacher
+          };
         });
-    </script>
+
+        localStorage.setItem(`timetable_${department}`, JSON.stringify(timetable));
+        renderTable(department, timetable);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function renderTable(department, data) {
+      const container = document.getElementById(`table_${department}`);
+      if (!data || data.length === 0) {
+        container.innerHTML = "<p>No timetable uploaded yet.</p>";
+        return;
+      }
+
+      let html = `<table>
+        <tr><th>Time Slot</th><th>Teacher</th></tr>`;
+      data.forEach((slot) => {
+        html += `<tr><td>${slot.time}</td><td>${slot.teacher}</td></tr>`;
+      });
+      html += "</table>";
+      container.innerHTML = html;
+    }
+
+    // On page load: show stored timetables
+    ["CS", "DS", "IT"].forEach((dept) => {
+      const stored = localStorage.getItem(`timetable_${dept}`);
+      if (stored) {
+        renderTable(dept, JSON.parse(stored));
+      }
+    });
+  </script>
 </body>
 </html>
